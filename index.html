@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On The Road</title>
+    <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+    />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9TyEgiqLXZ9YhrIqVkKyGWCimN8bWhwU&callback=initMap"></script>
+
+    <script>
+        let map
+
+        const myLocation = {x: '-28.270555', y: '-52.440439'}
+
+        const markers = [
+            {
+                title: "5⁰, 6⁰ e 7⁰ Niver Gatões Selvagens do Sul MC",
+                location: { lat: -30.086752, lng: -51.094432 },
+                startDate: "10/06",
+                endDate: "12/06",
+                img: "https://via.placeholder.com/300.png/09f/fff",
+                status: 'pending'
+            },
+
+            {
+                title: "Moto Namorados",
+                location: { lat: -29.967753329983044, lng: -50.119497196419644 },
+                startDate: "11/06",
+                endDate: "",
+                img: "https://via.placeholder.com/300.png/09f/fff",
+                status: 'pending'
+            },
+
+            {
+                title: "1⁰ Moto acampamento",
+                location: { lat: -26.72599680627505, lng: -53.51732750574752 },
+                startDate: "11/06",
+                endDate: "",
+                img: "https://via.placeholder.com/300.png/09f/fff",
+                status: 'on_going'
+            },
+        ]
+
+        function initMap() {
+            const city = new google
+                .maps
+                .LatLng(myLocation.x, myLocation.y)
+            
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: city,
+                zoom: 10
+            })
+
+            markers.forEach(el => {
+                addMarker(el, map)
+            })
+        }
+
+        function addMarker(markerInfo, map) {
+            const svgMarker = {
+                path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+                fillColor: "blue",
+                fillOpacity: 1,
+                strokeWeight: 0,
+                rotation: 0,
+                scale: 2,
+                anchor: new google.maps.Point(15, 30),
+            };
+
+            const marker = new google.maps.Marker({
+                position: markerInfo.location,
+                map,
+                icon: markerInfo.status === 'on_going' ? svgMarker : null,
+                title: 'Hello World!',
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+                content: buildInfoWindowContent(markerInfo) // corpo do HTML com os valores do marker,
+            });
+
+            marker.addListener('click', () => {
+                infowindow.open({
+                    anchor: marker,
+                    map,
+                    shouldFocus: true,
+                });
+            });
+        }
+
+        function buildInfoWindowContent(marker) {
+            return `
+                <img src="${marker.img}" alt="" srcset="">
+                <h2>${marker.title}</h2>
+
+                <ul>
+                    <li>Data de Inicio: ${marker.startDate}</li>
+                    <li>Data de Término: ${marker.endDate}</li>
+                </ul>
+            `;
+        }
+
+        window.initMap = initMap
+    </script>
+</body>
+</html>
